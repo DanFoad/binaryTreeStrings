@@ -177,7 +177,7 @@ void getLevels(Node *root, int **levels) {
 void centreString(char **str) {
 	char *temp;
 	int len = strlen(*str);
-	int i;
+	int i, j;
 
 	temp = (char*)malloc((len + 1) * sizeof(char));
 	strcpy(temp, *str);
@@ -185,8 +185,9 @@ void centreString(char **str) {
 	for (i = 0; i < (MAXLENGTH - len) / 2; i++) {
 		(*str)[i] = ' ';
 	}
-	strcat(*str, temp);
-	i += len;
+	for (j = 0; i < ((MAXLENGTH - len) / 2) + len; i++, j++) {
+		(*str)[i] = temp[j];
+	}
 	for (; i <= MAXLENGTH; i++) {
 		(*str)[i] = ' ';
 	}
@@ -245,11 +246,11 @@ void printBinaryTree(Node *root, int *levels) {
 	width = ((max * MAXLENGTH) + (max * 2));
 
 	for (i = 0; i <= maxDepth; i++) {
-		output[i] = (char*)malloc(width * sizeof(char));
-		for (j = 0; j < (width * sizeof(char)); j++) {
+		output[i] = (char*)malloc(MAXLENGTH * 10 * sizeof(char));
+		for (j = 0; j < (MAXLENGTH * 10 * sizeof(char)); j++) {
 			output[i][j] = ' ';
 		}
-		output[i][(width * sizeof(char))] = '\0';
+		output[i][(MAXLENGTH * 10 * sizeof(char))] = '\0';
 	}
 
 	printNode(root, 0, 0, 0, output);
@@ -259,90 +260,39 @@ void printBinaryTree(Node *root, int *levels) {
 	}
 }
 
-/*
-void printBinaryTree(Node *root){
-    
-    int currentCount, nextCount, depth, level, isFirst;
-	currentCount = level = isFirst = 1;
-	nextCount = 0;
-	depth = getDepth(root);
-    
-	Node *traverse;
-
-	if (root == 0) {
-		return;
-	}
-
-	push(root);
-
-	while (!isEmpty()) {
-		traverse = pop();
-		--currentCount;
-
-		if (isFirst) {
-			int i;
-			for (i = 0; i < pow(2, depth - level); i++) {
-				printf("  ");
-			}
-			isFirst = 0;
-		}
-
-		if (traverse != 0) {
-			if (traverse->data < 10) {
-				printf("%d ", traverse->data);
-			} else {
-				printf("%d", traverse->data);
-			}
-			push(traverse->left);
-			push(traverse->right);
-			nextCount += 2;
-		}
-
-		int i;
-		for (i = 0; i < 2*pow(2, depth - level + 1) - 2; i++) {
-			printf(" ");
-		}
-
-		if (currentCount == 0) {
-			printf("\r\n");
-			currentCount = nextCount;
-			nextCount = 0;
-			++level;
-			isFirst = 1;
-		}
-	}
-	resetQueue();
-}
-*/
 int main(void) {
 	char **names;
 	int i, count;
 
-	count = 8;
+	count = 10;
 
 	names = (char**)malloc(count * sizeof(char*));
 	for (i = 0; i < count; i++) {
 		names[i] = (char*)malloc(MAXLENGTH * sizeof(char));
 	}
-	strcpy(names[0], "Some Name");
-	strcpy(names[1], "John Smith");
-	strcpy(names[2], "Harold McMeme");
-	strcpy(names[3], "Firstname Lastname");
-	strcpy(names[4], "Nomen Cognomen");
-	strcpy(names[5], "Adam Godson");
-	strcpy(names[6], "Wu Tang");
-	strcpy(names[7], "Someone Else");
+	strcpy(names[0], "Main Person");
+	strcpy(names[1], "Daughter");
+	strcpy(names[2], "Son");
+	strcpy(names[3], "Sister");
+	strcpy(names[4], "Brother");
+	strcpy(names[5], "Nephew");
+	strcpy(names[6], "Granddaughter");
+	strcpy(names[7], "Grandson");
+	strcpy(names[8], "Daughter");
+	strcpy(names[9], "Grandnephew");
     
     Node *root = 0;
 
 	insertAtPoint(names[0], &root, "", 0);
 	insertAtPoint(names[1], &root, names[0], 1);
-	insertAtPoint(names[2], &root, names[0], 0);
-	insertAtPoint(names[3], &root, names[0], 1);
-	insertAtPoint(names[4], &root, names[1], 1);
-	insertAtPoint(names[5], &root, names[1], 0);
+	insertAtPoint(names[2], &root, names[0], 1);
+	insertAtPoint(names[3], &root, names[0], 0);
+	insertAtPoint(names[4], &root, names[0], 0);
+	insertAtPoint(names[5], &root, names[3], 1);
 	insertAtPoint(names[6], &root, names[2], 1);
-	insertAtPoint(names[7], &root, names[2], 0);
+	insertAtPoint(names[7], &root, names[1], 1);
+	insertAtPoint(names[8], &root, names[0], 1);
+	insertAtPoint(names[9], &root, names[5], 1);
 
 	int *levels;
 	getLevels(root, &levels);
