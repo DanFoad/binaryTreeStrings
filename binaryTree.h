@@ -13,7 +13,7 @@ typedef struct Node Node;
 
 struct Node{
     
-    int data;
+    char *data;
     struct Node *left;
     struct Node *right;
     
