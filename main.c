@@ -192,6 +192,8 @@ void centreString(char **str) {
 		(*str)[i] = ' ';
 	}
 	(*str)[MAXLENGTH] = '\0';
+
+	free(temp);
 }
 
 int printNode(Node *node, int isLeft, int offset, int depth, char **output) {
@@ -202,9 +204,9 @@ int printNode(Node *node, int isLeft, int offset, int depth, char **output) {
 		return 0;
 	}
 
-	b = (char*)malloc(MAXLENGTH * sizeof(char));
+	b = (char*)malloc((MAXLENGTH + 1) * sizeof(char));
 	strcpy(b, node->data);
-
+	b[MAXLENGTH] = '\0';
 	centreString(&b);
 
 	int left = printNode(node->left, 1, offset, depth + 1, output);
@@ -228,6 +230,8 @@ int printNode(Node *node, int isLeft, int offset, int depth, char **output) {
 		output[depth - 1][offset + left + (MAXLENGTH / 2)] = '.';
 	}
 
+	free(b);
+
 	return left + MAXLENGTH + right;
 }
 
@@ -242,11 +246,12 @@ void printBinaryTree(Node *root, int *levels) {
 		}
 	}
 
-	char **output = malloc(maxDepth * sizeof(char*));
+	char **output = malloc((maxDepth + 1) * sizeof(char*));
+	output[maxDepth] = '\0';
 	width = ((max * MAXLENGTH) + (max * 2));
 
 	for (i = 0; i <= maxDepth; i++) {
-		output[i] = (char*)malloc(MAXLENGTH * 10 * sizeof(char));
+		output[i] = (char*)malloc((MAXLENGTH * 10 + 1) * sizeof(char));
 		for (j = 0; j < (MAXLENGTH * 10 * sizeof(char)); j++) {
 			output[i][j] = ' ';
 		}
@@ -258,6 +263,15 @@ void printBinaryTree(Node *root, int *levels) {
 	for (i = 0; i <= maxDepth; i++) {
 		printf("%s\r\n", output[i]);
 	}
+
+	for (i = 0; i <= maxDepth; i++) {
+		free(output[i]);
+	}
+	free(output);
+}
+
+void printNAryTree(Node *root) {
+
 }
 
 int main(void) {
@@ -299,14 +313,6 @@ int main(void) {
 	
 
 	printBinaryTree(root, levels);
-
-	/*
-	char *test = malloc(MAXLENGTH * sizeof(char));
-	strcpy(test, "testing");
-	printf("%s\r\n", test);
-	centreString(&test);
-	printf("%s\r\n", test);
-	*/
 
 	for (i = 0; i < count; i++) {
 		free(names[i]);
