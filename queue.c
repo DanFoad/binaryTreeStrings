@@ -4,28 +4,40 @@
 
 /* Create and set a max size for the queue. Can be changed if necessary */
 
-#define maxSize 32
+/* Struct for linked list */
+typedef struct listNode {
+	Node *data;
+	struct listNode *next;
+} ListNode;
 
-Node * nodeArray[maxSize];
-int frontOfQueue = 0;
-int endOfQueue = -1;
+/* Create a node in linked list from data */
+
+ListNode* createListNode(Node *data) {
+	ListNode *node = (ListNode*)malloc(sizeof(ListNode));
+	node->data = data;
+	node->next = 0;
+	return node;
+}
+
+ListNode *listroot;
 int queueSize = 0;
 
 /* Return the first element in the queue, should be the only accessible one */
 
 Node * peek(){
-	return nodeArray[frontOfQueue];
+	return listroot;
 }
 
 /* if queue is emptied at any point, this resets all variables keeping track of the queue */
 
 void resetQueue() {
-
+	ListNode *temp = listroot;
 	queueSize = 0;
-	frontOfQueue = 0;
-
-	/* -1 to indicate the queue is empty, along with queueSize as 0 */
-	endOfQueue = -1;
+	while (listroot != 0) {
+		temp = listroot;
+		listroot = temp->next;
+		free(temp);
+	}
 }
 
 /* Check to see if the queue is empty */
@@ -46,19 +58,20 @@ int size(){
 /* Add a new element to the queue */
 
 void push ( Node * Element){
-
-	/* Only add an element if the size of the queue is less than the max size */
-
-	if(queueSize < maxSize){
-
-		/* Set to -1, if the number of elements is one less than max size */
-		if(endOfQueue == maxSize - 1){
-			endOfQueue = -1;
+	queueSize++;
+	if (listroot == 0) {
+		listroot = createListNode(Element);
+		return;
+	}
+	/* Add the element to the next place in the queue. */
+	ListNode *node = createListNode(Element);
+	ListNode *traverse = listroot;
+	while (traverse != 0) {
+		if (traverse->next == 0) {
+			traverse->next = node;
+			return;
 		}
-
-		/* Add the element to the next place in the queue. if queue is full, element will replace nodeArray[0] */
-		nodeArray[++endOfQueue] = Element;
-		queueSize++;
+		traverse = traverse->next;
 	}
 }
 
@@ -73,14 +86,13 @@ Node * pop(){
 
 	/* Store the array at the front of the queue to be removed, increment front of queue for next time pop is used, 
 	removing element from array */
-	Node * toBeRemoved = nodeArray[frontOfQueue++];
+	ListNode *toBeRemoved = listroot;
 
-	/* If the last element has been popped from the queue, reset the frontOfQueue to the start of the array again */
-	if(frontOfQueue == maxSize){
-		frontOfQueue = 0;
+	if (toBeRemoved != 0) {
+		listroot = toBeRemoved->next;
 	}
 
 	/* Reduce the size of the queue */
 	queueSize--;
-	return toBeRemoved;
+	return toBeRemoved->data;
 }
