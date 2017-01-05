@@ -401,12 +401,85 @@ void printBinaryTree(Node *root, int *levels) {
 	free(output);
 }
 
+int printNodeNAry(Node *node, int isChild, int offset, int depth, int width, char **output) {
+	int i;
+	char *tempString; /* Temporary string to hold centre padded data value */
+
+	/* If node is empty, return */
+	if (node == 0) {
+		return 0;
+	}
+
+	/* Create temporary string and copy data value to it */
+	tempString = (char*)malloc((MAXLENGTH + 1) * sizeof(char));
+	strcpy(tempString, node->data);
+	tempString[MAXLENGTH] = '\0'; /* Null terminate temporary string */
+
+	/* Centre pad the temporary string for aesthetics */
+	centreString(&tempString);
+
+	/* Get value for width of children nodes and siblings */
+	int children = printNodeNAry(node->left, 1, offset, depth + 1, 0, output); /* Child */
+	int siblings = printNodeNAry(node->right, 0, offset + children + MAXLENGTH, depth, children, output); /* Sibling */
+
+	/* Add centre-padded data value to output array */
+	for (i = 0; i < MAXLENGTH; i++) {
+		output[2 * depth][offset+ i] = tempString[i];
+	}
+
+	/* If not 1st level and is direct child */
+	if (depth && isChild) {
+		/* Draw line connecting to parent */
+		output[2 * depth - 1][offset + (MAXLENGTH / 2)] = '|';
+	} else if (!isChild) { /* If sibling */
+		/* Draw line between sibling */
+		for (i = 0; i < width; i++) {
+			output[2 * depth][offset - width + i] = '-';
+		}
+	}
+
+	/* Free memory for temporary string */
+	free(tempString);
+
+	return MAXLENGTH + siblings + children;
+}
+
 /** printNAryTree
  * Prints out binary tree in N-Ary format
  * @param Node *root	Root node of tree to traverse and print
  */
 void printNAryTree(Node *root) {
+	int i, j, max = 0, width = 0;
+	int nameCount = getSize(root);
+	int maxDepth = getDepth(root);
 
+	/* Create array to hold print representation of tree */
+	char **output = malloc(2 * (maxDepth + 1) * sizeof(char*));
+	output[maxDepth] = '\0'; /* Null terminate array of strings */
+	width = ((max * MAXLENGTH) + (max * 2));
+
+	/* Allocate space within array for each level of the tree */
+	for (i = 0; i <= maxDepth * 2; i++) {
+		output[i] = (char*)malloc((MAXLENGTH * 10 + 1) * sizeof(char));
+		for (j = 0; j < (MAXLENGTH * 10 * sizeof(char)); j++) {
+			output[i][j] = ' '; /* Initialise strings to be filled with spaces */
+		}
+		output[i][(MAXLENGTH * 10 * sizeof(char))] = '\0'; /* Null terminate each line */
+	}
+
+	/* Recursively build print representation of tree */
+	printNodeNAry(root, 0, 0, 0, 0, output);
+
+	/* Print out tree from representation */
+	for (i = 0; i <= 2 * maxDepth; i++) {
+		printf("%s\r\n", output[i]);
+	}
+
+	/* Free the output array and all of its lines */
+	for (i = 0; i <= 2 * maxDepth; i++) {
+		free(output[i]);
+	}
+	free(output);
 }
 
 /** main
@@ -454,9 +527,14 @@ int main(void) {
 	/* Get element count of each level of tree */
 	int *levels;
 	getLevels(root, &levels);
-	
+
 	/* Print out binary tree */
+	printf("Binary tree representation: \r\n");
 	printBinaryTree(root, levels);
+
+	/* Print out n-ary tree */
+	printf("\r\n\r\nN-Ary tree representation: \r\n");
+	printNAryTree(root);
 
 	/* Free names array and all of its elements */
 	for (i = 0; i < count; i++) {
