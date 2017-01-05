@@ -1,4 +1,4 @@
-/** main.c
+﻿/** main.c
  *	Binary Tree - Strings implementation
  *	Created by Dan Foad and Alex Owen-Meehan
  *	Student IDs: 1526813, 1434732
@@ -13,7 +13,7 @@
 #include "queue.h"
 
 /* Max length of strings in nodes */
-#define MAXLENGTH 14
+#define MAXLENGTH 15
 
 /** initNode
  * Initialise a node in the binary tree with given data and null children
@@ -278,6 +278,10 @@ void centreString(char **str) {
 		(*str)[i] = ' ';
 	}
 
+	/* Add brackets around text values*/
+	(*str)[0] = '(';
+	(*str)[MAXLENGTH - 1] = ')';
+	
 	/* Null terminate string */
 	(*str)[MAXLENGTH] = '\0';
 
@@ -317,24 +321,32 @@ int printNode(Node *node, int isLeft, int offset, int depth, char **output) {
 
 	/* Add centre-padded data value to output array */
 	for (i = 0; i < MAXLENGTH; i++) {
-		output[depth][offset + left + i] = tempString[i];
+		output[2*depth][offset + left + i] = tempString[i];
 	}
 
 	/* If not root node and is left child of parent */
 	if (depth && isLeft) {
 		/* Draw branch lines for parent */
 		for (i = 0; i < MAXLENGTH + right; i++) {
-			output[depth - 1][offset + left + (MAXLENGTH / 2) + i] = '-';
+			output[2*depth-2][offset + left + (MAXLENGTH / 2) + i] = '-';
 		}
 
-		output[depth - 1][offset + left + (MAXLENGTH / 2)] = '.';
+		for (i = 0; i < MAXLENGTH - 2; i++) {
+			output[2 * depth - 1][offset + left + i + 1] = '_';
+		}
+
+		output[2*depth - 1][offset + left + (MAXLENGTH / 2)] = '|';
 	} else if (depth && !isLeft) { /* If not root node and right child */
 		/* Draw branch lines for parent */
 		for (i = 0; i < left + MAXLENGTH; i++) {
-			output[depth - 1][offset - (MAXLENGTH / 2) + i] = '-';
+			output[2*depth-2][offset - (MAXLENGTH / 2) + i] = '-';
 		}
 
-		output[depth - 1][offset + left + (MAXLENGTH / 2)] = '.';
+		for (i = 0; i < MAXLENGTH - 2; i++) {
+			output[2 * depth - 1][offset + left + i + 1] = '_';
+		}
+
+		output[2*depth - 1][offset + left + (MAXLENGTH / 2)] = '|';
 	}
 
 	/* Free memory for temporary string */
@@ -361,12 +373,12 @@ void printBinaryTree(Node *root, int *levels) {
 	}
 
 	/* Create array to hold print representation of tree */
-	char **output = malloc((maxDepth + 1) * sizeof(char*));
+	char **output = malloc(2*(maxDepth + 1) * sizeof(char*));
 	output[maxDepth] = '\0'; /* Null terminate array of strings */
 	width = ((max * MAXLENGTH) + (max * 2));
 
 	/* Allocate space within array for each level of the tree */
-	for (i = 0; i <= maxDepth; i++) {
+	for (i = 0; i <= maxDepth*2; i++) {
 		output[i] = (char*)malloc((MAXLENGTH * 10 + 1) * sizeof(char));
 		for (j = 0; j < (MAXLENGTH * 10 * sizeof(char)); j++) {
 			output[i][j] = ' '; /* Initialise strings to be filled with spaces */
@@ -378,12 +390,12 @@ void printBinaryTree(Node *root, int *levels) {
 	printNode(root, 0, 0, 0, output);
 
 	/* Print out tree from representation */
-	for (i = 0; i <= maxDepth; i++) {
+	for (i = 0; i <= 2*maxDepth; i++) {
 		printf("%s\r\n", output[i]);
 	}
 
 	/* Free the output array and all of its lines */
-	for (i = 0; i <= maxDepth; i++) {
+	for (i = 0; i <= 2*maxDepth; i++) {
 		free(output[i]);
 	}
 	free(output);
