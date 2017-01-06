@@ -497,17 +497,18 @@ int main(void) {
 		names[i] = (char*)malloc(MAXLENGTH * sizeof(char));
 	}
 
+
 	/* Add all names to array of names */
-	strcpy(names[0], "Main Person");
-	strcpy(names[1], "Daughter");
-	strcpy(names[2], "Son");
-	strcpy(names[3], "Sister");
-	strcpy(names[4], "Brother");
-	strcpy(names[5], "Nephew");
-	strcpy(names[6], "Granddaughter");
-	strcpy(names[7], "Grandson");
-	strcpy(names[8], "Daughter");
-	strcpy(names[9], "Grandnephew");
+	strcpy(names[0], "Sal Thomas");
+	strcpy(names[1], "Lesia Tirrel");
+	strcpy(names[2], "Kody Thomas");
+	strcpy(names[3], "Amity Paget");
+	strcpy(names[4], "Quinn Thomas");
+	strcpy(names[5], "Ivor Paget");
+	strcpy(names[6], "Lina Thomas");
+	strcpy(names[7], "Darell Tirrel");
+	strcpy(names[8], "Aline Thomas");
+	strcpy(names[9], "Darby Paget");
     
 	/* Create root node of tree */
     Node *root = 0;
